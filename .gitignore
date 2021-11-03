@@ -127,3 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Input and output folders for preprocessing
+DataPreprocessing/Input/*
+DataPreprocessing/Output/*
+!DataPreprocessing/Input/README.md
+!DataPreprocessing/Output/README.md
+
