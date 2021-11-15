@@ -1,4 +1,5 @@
 import os
+import sys
 import csv
 import xml.etree.ElementTree as ET
 
@@ -56,6 +57,17 @@ class CresciPreprocessor:
 
 
 if __name__ == "__main__":
-    pan19Preprocessor = PAN19Preprocessor()
-    cresciPreprocessor = CresciPreprocessor()
-    cresciPreprocessor.preprocess()
+    if len(sys.argv) != 2:
+        print("Please enter argument on which dataset you wish to preprocess (python preprocessor.py pan19/cresci)")
+        quit()
+    dataset = sys.argv[1]
+    preprocessor = None
+    if dataset == 'pan19':
+        preprocessor = PAN19Preprocessor()
+    elif dataset == 'cresci':
+        preprocessor = CresciPreprocessor()
+    else:
+        print("Available dataset options are pan19 and cresci")
+        quit()
+                
+    preprocessor.preprocess()
