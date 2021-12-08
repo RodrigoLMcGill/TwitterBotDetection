@@ -19,22 +19,22 @@ class Model:
 			self.filename = filename
 
 	def get_pan19_data(self):
-		#read in preprocessed data from csv file from path 
-		#note: data file shoulod be in the Model/Datasets directory
-		reader = csv.reader(open(f"./Model/Datasets/{filename}", encoding="utf-8"))
-
-		#lists that will store all tweets with the samne label (0 or 1/real or bot)
+		#lists that will store all tweets with the same label (0 or 1/real or bot)
 		tweets_bot = list()
 		tweets_real = list()
 
-		#row[0] contans author id
-		#row[1] contains label of 0 or 1
-		#row[2] contains string with all the authors tweets
-		for row in reader:
-			if row[1] == '1':	
-				tweets_bot.append(row[2])
-			if row[1] == '0':
-				tweets_real.append(row[2])
+		#read in preprocessed data from csv file from path 
+		#note: data file shoulod be in the Model/Datasets directory
+		with open(f"./Model/Datasets/{self.filename}", encoding="utf-8") as f:
+			reader = csv.reader(f)
+			#row[0] contans author id
+			#row[1] contains label of 0 or 1
+			#row[2] contains string with all the authors tweets
+			for row in reader:
+				if row[1] == '1':	
+					tweets_bot.append(row[2])
+				if row[1] == '0':
+					tweets_real.append(row[2])
 
 		#to randomize order
 		random.shuffle(tweets_bot)
@@ -46,7 +46,31 @@ class Model:
 		#TODO preprocessed cresci data is in two different files
 		# we need to take all tweets from bot accounts (self.filename) 
 		# and the same amount of accounts from Model/Datasets/genuine_accounts.csv 
-		pass
+		
+		#lists that will store all tweets with the same label (0 or 1/real or bot)
+		tweets_bot = list()
+		tweets_real = list()
+
+		accounts_count = 0
+		with open(f"./Model/Datasets/{self.filename}", encoding="utf-8") as f:
+			reader = csv.reader(f)
+			for row in reader:
+				accounts_count += 1
+				tweets_bot.append(row[2])
+		
+		cresci_real_accounts = 3394
+		with open("./Model/Datasets/genuine_accounts.csv", encoding="utf-8") as f:
+			# read n random lines from genuine_accounts file, where n is the number of bot accounts 
+			random_lines = random.sample(f.readlines(), accounts_count if accounts_count < cresci_real_accounts else cresci_real_accounts)
+			for row in csv.reader(random_lines):
+				tweets_real.append(row[2])
+
+		#to randomize order
+		random.shuffle(tweets_bot)
+		random.shuffle(tweets_real)
+		return tweets_bot, tweets_real
+
+
 
 
 	def preprocess_train_test(self):
@@ -167,4 +191,14 @@ if __name__ == "__main__":
 		print(e)
 		quit()
 	
+	maxInt = sys.maxsize
+	while True:
+		# decrease the maxInt value by factor 10 
+		# as long as the OverflowError occurs.
+
+		try:
+			csv.field_size_limit(maxInt)
+			break
+		except OverflowError:
+			maxInt = int(maxInt/10)
 	model.preprocess_train_test()
