@@ -50,10 +50,6 @@ class Model:
 
 	
 	def get_cresci_data(self):
-		#TODO preprocessed cresci data is in two different files
-		# we need to take all tweets from bot accounts (self.filename) 
-		# and the same amount of accounts from Model/Datasets/genuine_accounts.csv 
-		
 		#lists that will store all tweets with the same label (0 or 1/real or bot)
 		tweets_bot = list()
 		tweets_real = list()
