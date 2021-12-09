@@ -1,16 +1,23 @@
-from collections import defaultdict
 import csv
 import random
 import os.path
 import sys
 import time
+import string
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition import TruncatedSVD
 from sklearn import svm
 from sklearn.metrics import classification_report
-from sklearn.metrics import accuracy_score
+from nltk.tokenize import TweetTokenizer
 
 class Model:
+
+	class PreprocessingTokenizer(object):
+		def __init__(self):
+			self.tt = TweetTokenizer(reduce_len=True, preserve_case=True)
+		def __call__(self, tweet):
+			tokenized_tweet = [t if not t.startswith("http") else "<URLURL>" for t in self.tt.tokenize(tweet) if not all(c in string.punctuation for c in t)]
+			return tokenized_tweet
 
 	def __init__(self, filename):
 		if not os.path.isfile(f"./Model/Datasets/{filename}"):
@@ -71,15 +78,14 @@ class Model:
 		return tweets_bot, tweets_real
 
 
-
-
 	def preprocess_train_test(self):
 		start_time = time.time()
 		tweets_bot, tweets_real = self.get_data()
 		training, testing = self.split_data(tweets_bot, tweets_real)
 
+		tokenizer = self.PreprocessingTokenizer()
 		#create tfidf vectorizer
-		vectorizer = TfidfVectorizer(ngram_range = (1,3), min_df =2)
+		vectorizer = TfidfVectorizer(ngram_range = (1,3), min_df =2, tokenizer=tokenizer)
 		#dimensionality reducer 
 		svd = TruncatedSVD(n_components=200)
 		#model classifier
