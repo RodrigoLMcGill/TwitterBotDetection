@@ -49,6 +49,8 @@ class CresciPreprocessor:
             folder_path = path_name[0]
             folder_name = path_name[1]
             is_bot = 0 if "genuine_accounts" in folder_path else 1
+            # the structure of the fake_followers dataset was not like the others
+            # the tweets were in the 2nd column and user id's in the 4th, instead of 3rd and 5th 
             tweet_index = 2 if "fake_followers" in folder_path else 1
             userid_index = 4 if "fake_followers" in folder_path else 3
             tweets_by_account_dict = {}                  
