@@ -55,6 +55,7 @@ class Model:
 		tweets_real = list()
 
 		accounts_count = 0
+		is_sample_run = 'sample' in self.filename
 		with open(f"./Model/Datasets/{self.filename}", encoding="utf-8") as f:
 			reader = csv.reader(f)
 			for row in reader:
@@ -62,7 +63,8 @@ class Model:
 				tweets_bot.append(row[2])
 		
 		cresci_real_accounts = 3394
-		with open("./Model/Datasets/genuine_accounts.csv", encoding="utf-8") as f:
+		genuine_accounts_file = "./Model/Datasets/genuine_accounts_sample.csv" if is_sample_run else "./Model/Datasets/genuine_accounts.csv"
+		with open(genuine_accounts_file, encoding="utf-8") as f:
 			# read n random lines from genuine_accounts file, where n is the number of bot accounts 
 			random_lines = random.sample(f.readlines(), accounts_count if accounts_count < cresci_real_accounts else cresci_real_accounts)
 			for row in csv.reader(random_lines):
@@ -95,7 +97,7 @@ class Model:
 
 
 	def get_data(self):
-		if self.filename == "PAN19-Preprocessed.csv":
+		if "PAN19-Preprocessed" in self.filename:
 			return self.get_pan19_data()
 		else:
 			return self.get_cresci_data()		
